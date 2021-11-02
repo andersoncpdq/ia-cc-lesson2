@@ -54,9 +54,13 @@ def region_interest(mtx, c_roi, s_roi):
     x, y = c_roi
     h, w = s_roi
 
-    x1 = max(x - (w // 2), 0)
-    y1 = max(y - (h // 2), 0)
-    x2 = min(1 + x + (w // 2), w)
-    y2 = min(1 + y + (h // 2), h)
+    x1 = x - (w // 2)
+    y1 = y - (h // 2)
+    x2 = 1 + x + (w // 2)
+    y2 = 1 + y + (h // 2)
 
     return mtx[x1:x2, y1:y2]
+
+
+def roi_list(mtx, c_lst, s_lst):
+    return [region_interest(mtx, c_lst[i], s_lst[i]) for i in range(len(c_lst))]
