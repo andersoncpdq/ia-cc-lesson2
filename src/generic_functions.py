@@ -64,3 +64,7 @@ def region_interest(mtx, c_roi, s_roi):
 
 def roi_list(mtx, c_lst, s_lst):
     return [region_interest(mtx, c_lst[i], s_lst[i]) for i in range(len(c_lst))]
+
+
+def thresholding(mtx, bias):
+    return np.vectorize(lambda x: 1 if x >= bias else 0)(mtx)
