@@ -48,3 +48,15 @@ def proximity_analysis(str_lst, str_key, bias):
 
 def no_repetition(lst):
     return list(dict.fromkeys(lst))
+
+
+def region_interest(mtx, c_roi, s_roi):
+    x, y = c_roi
+    h, w = s_roi
+
+    x1 = max(x - (w // 2), 0)
+    y1 = max(y - (h // 2), 0)
+    x2 = min(1 + x + (w // 2), w)
+    y2 = min(1 + y + (h // 2), h)
+
+    return mtx[x1:x2, y1:y2]
