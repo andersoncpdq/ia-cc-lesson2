@@ -24,7 +24,7 @@ def main():
     bias = args['bias']
     result = thresholding(mtx, bias)
 
-    print('Original matrix:\n{}'.format(mtx))
+    print('Matrix:\n', mtx)
     print('\nLimiarização com bias = {}:\n{}'.format(bias, result))
 
 

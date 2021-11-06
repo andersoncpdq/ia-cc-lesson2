@@ -28,8 +28,9 @@ def main():
     rs = args['rs']
     result = region_interest(mtx, rc, rs)
 
-    print('Original matrix:\n{}'.format(mtx))
-    print('ROI matrix:\n{}'.format(result))
+    print('\nMatrix:\n', mtx)
+    print('\n')
+    print('ROI:\n', result)
 
 
 if __name__ == '__main__':

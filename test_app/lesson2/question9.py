@@ -15,10 +15,10 @@ def main():
                     default=mtx,
                     help='input matrix')
     ap.add_argument('-rc_lst', '--rc_lst',
-                    default=[(1, 1), (2, 2), (2, 2), (2, 2), (2, 2)],
+                    default=[(1, 1), (2, 2), (3, 3)],
                     help='roi center list')
     ap.add_argument('-rs_lst', '--rs_lst',
-                    default=[(3, 3), (3, 3), (3, 5), (5, 3), (5, 5)],
+                    default=[(3, 3), (5, 3), (5, 5)],
                     help='roi shape list')
 
     args = vars(ap.parse_args())
@@ -28,8 +28,8 @@ def main():
     s_lst = args['rs_lst']
     result = roi_list(mtx, c_lst, s_lst)
 
-    print('Original matrix:\n{}'.format(mtx))
-    print('\nROIs:')
+    print('\nMatrix:\n', mtx)
+    print('\nLista de ROIs:')
     for i in range(len(result)):
         print('center = {}, shape = {}'.format(mtx[c_lst[i][0]][c_lst[i][1]], s_lst[i]))
         print('\n{}\n'.format(result[i]))
