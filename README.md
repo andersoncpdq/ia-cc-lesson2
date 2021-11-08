@@ -1,1 +1,1 @@
-# ia-cc-lesson2
+# Instituto Atlântico Academy - Computação Cognitiva (Squad 05).
