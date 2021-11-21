@@ -4,23 +4,22 @@ from collections import Counter
 
 def euclidean_distance(p1, p2):
     """
-    Calcula a distancia euclidiana entre dois pontos.
+    Calculate the distance between two points
 
-    :param p1: coordenada do ponto 1;
-    :param p2: coordenada do ponto 2;
-    :return: distancia euclidiana entre os pontos (p1 e p2).
+    :param p1: point 1 coordinates;
+    :param p2: point 2 coordinates;
+    :return: euclidian distance between p1 and p2
     """
     return np.linalg.norm(p1 - p2)
 
 
 def closest_coordinate(p1, lp):
     """
-    Calcula qual a coordenada mais proxima de uma lista de
-    pontos a um ponto especifico.
+    Calculate te closest coordinate of a list compared to another point
 
-    :param p1: ponto especifico;
-    :param lp: lista de pontos;
-    :return: coordenada mais proxima na lista (lp) ao ponto (p1).
+    :param p1: specific point;
+    :param lp: points list;
+    :return: list's closest coordinate comparing to p1
     """
     pt = []
     min_dist = float('inf')
@@ -34,11 +33,11 @@ def closest_coordinate(p1, lp):
 
 def sort_string_list(str_lst, desc=False):
     """
-    Ordena uma lista de strings considerando o tamanho de cada string.
+    Sort a string's list with the len of the words in parameter
 
-    :param str_lst: lista de strings;
+    :param str_lst: strings list;
     :param desc: booleano para indicar ordem decrescente;
-    :return: a lista ordenada.
+    :return: sorted list.
     """
     if desc:
         str_lst = sorted(str_lst, key=len, reverse=True)
@@ -49,21 +48,20 @@ def sort_string_list(str_lst, desc=False):
 
 def count_string_occurrences(str_lst, str_key):
     """
-    Contabiliza a quantidade de ocorrencias de uma string-alvo em uma
-    lista de strings.
+    Counts the quantity of ocurrencies of a specific word in a string list
 
-    :param str_lst: lista de strings;
-    :param str_key: string-alvo;
-    :return: numero de ocorrencias de str_key em str_lst.
+    :param str_lst: string list;
+    :param str_key: key string;
+    :return: Quantity of ocurrencies
     """
     return str_lst.count(str_key)
 
 
 def occurrences_for_each_element(str_lst):
     """
-    Contabiliza a quantidade de cada elemento na lista de strings.
+    Counts how many times each element in a list of strings repeat
 
-    :param str_lst: lista de strings;
+    :param str_lst: stris list;
     :return: dictionary mapeando a contagem de cada elemento na lista.
     """
     return Counter(str_lst)
@@ -71,14 +69,12 @@ def occurrences_for_each_element(str_lst):
 
 def proximity_analysis(str_lst, str_key, bias):
     """
-    Realiza uma analise de proximidade de strings em uma lista de strings,
-    com base na string a ser analisada e o limiar de distancia de analise.
+    Realizes a proximity analysis in a string's list, comparing them with a passed string
 
-    :param str_lst: lista de strings;
-    :param str_key: string de analise;
-    :param bias: limiar de distancia de analise;
-    :return: uma lista com as strings mais proximas da string de analise
-             (str_key) baseado no limiar de distancia (bias).
+    :param str_lst: string list;
+    :param str_key: analysis string;
+    :param bias: limiar distance;
+    :return: A list with the closest strings based on bias
     """
     str_idx = [i for i, s in enumerate(str_lst) if s == str_key]
     bias_idx = []
@@ -94,22 +90,22 @@ def proximity_analysis(str_lst, str_key, bias):
 
 def no_repetition(lst):
     """
-    Remove os elementos repetidos de uma lista de qualquer tipo de dados.
+    Remove repeated elements in a list
 
-    :param lst: lista de entrada;
-    :return: lista sem elementos repetidos.
+    :param lst: passed list;
+    :return: list without repeating elements.
     """
     return list(dict.fromkeys(lst))
 
 
 def region_interest(mtx, c_roi, s_roi):
     """
-    Extrai uma regiao de interesse (ROI) de uma matriz 2D.
+    Extracts a ROI from a 2D matrix.
 
-    :param mtx: matriz 2D de entrada;
-    :param c_roi: coordenada central da ROI (x, y);
-    :param s_roi: shape da ROI (h, w);
-    :return: recorte da matriz original (matriz ROI).
+    :param mtx: 2D matrix;
+    :param c_roi: ROI's central coordinate(x,y);
+    :param s_roi: ROI's shape (h, w);
+    :return: ROI matrix
     """
     x, y = c_roi
     h, w = s_roi
@@ -124,24 +120,24 @@ def region_interest(mtx, c_roi, s_roi):
 
 def roi_list(mtx, c_lst, s_lst):
     """
-    Extrai multiplas ROIs de uma matriz 2D.
+    Extracts multiple ROI's from a 2D matrix
 
-    :param mtx: matriz 2D de entrada;
-    :param c_lst: lista dos centros das ROIs (x, y);
-    :param s_lst: lista de shapes das ROIs (h, w);
-    :return: lista de ROIs extraidas da matriz 2D de entrada.
+    :param mtx: 2D matrix;
+    :param c_lst: ROI's center list(x,y);
+    :param s_lst: Roi's shapes list (h, w);
+    :return: Roi's list
     """
     return [region_interest(mtx, c_lst[i], s_lst[i]) for i in range(len(c_lst))]
 
 
 def thresholding(mtx, bias):
     """
-    Realiza a limiarizacao de uma matriz numerica. Para cada valor igual ou
-    superior ao limiar na matriz de entrada, é atribuído valor 1, caso contrario,
-    é atribuido valor 0, na mesma posição da matriz de retorno.
+    Performs the thresholding of a numerical matrix. For each equal value or
+    above the threshold in the input matrix, a value of 1 is assigned, otherwise,
+    it is assigned a value of 0, in the same position as the return matrix.
 
-    :param mtx: matriz de entrada;
+    :param mtx: matrix;
     :param bias: limiar;
-    :return: matriz binaria com as mesmas proporcoes da matriz de entrada.
+    :return: binary matrix with the same proportions of the original matrix
     """
     return np.vectorize(lambda x: 1 if x >= bias else 0)(mtx)
