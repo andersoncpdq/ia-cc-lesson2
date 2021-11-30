@@ -1,26 +1,26 @@
 import PyPDF2
-from pathlib import Path
-from typing import Final, List, Dict
+from typing import List, Dict
 import os
 import stanza
 import re
 import unidecode
+import json
 
 stanza.download('pt')
-PATH: Final = str(Path(__file__).parent.resolve())  # Path to current file working directory
-all_files = os.listdir(PATH)  # All files in current directory
-pdf_files = sorted([file for file in all_files if 'pdf' in file])  # All PDF files in current directory
-print(pdf_files)
+
 
 stop_words = ['o', 'a', 'é', 'e', 'na', 'no', 'ou', 'do', 'da', 'de', 'na', 'à', 'ao', 'as', 'os', 'e,' 'por', 'em',
               'mais', 'como', 'embora', 'haja', 'ser', 'foram', 'tais', 'dos', 'das', 'esse']  # A list with stop words
 
 
-def reading_pdfs() -> List:
+def reading_pdfs(PATH: str) -> List:
     """
     This function reads all PDF's in the directory and saves their content in a list
+    :param PATH: Path to PDF directory
     :return: List with the filtered texts
     """
+    all_files = os.listdir(PATH)  # All files in current directory
+    pdf_files = sorted([file for file in all_files if 'pdf' in file])  # All PDF files in current directory
     text = list()
     for x in pdf_files:
         file = open(PATH + '/' + f'{x}', 'rb')  # Opening PDF file as binary file
@@ -41,11 +41,25 @@ def reading_pdfs() -> List:
         new_phrase = ' '.join(filtered_words)
         filtered_text.append(new_phrase)
 
+    print(filtered_text)
+
     del text  # Deleting unused variable
     del filtered_words  # Deleting unused variable
 
     return filtered_text
 
+
+def lemma(word: str) -> str:
+    """
+    This function will lemmantize a word and return her with lemma
+    :param word: word
+    :return: lemmantized word
+    """
+    nlp = stanza.Pipeline(lang='pt', processors='tokenize,mwt,pos,lemma')
+    doc = nlp(word)
+    for sent in doc.sentences:
+        for word in sent.words:
+            return word.lemma
 
 
 def tokenize(filtered_list: List) -> Dict:
@@ -68,8 +82,15 @@ def tokenize(filtered_list: List) -> Dict:
             print('='*5 + f' Sentence {i + 1} tokens ' + '='*5)
             print(*[f'id: {token.id[0]}\ttext: {token.text}' for token in sentence.tokens], sep='\n')
             for token in sentence.tokens:
-                tokenized_terms[s] |= {token.id[0]: token.text}  # update operation
+                # LEMANTIZAR AQUI!!!!
+                lemma_word = lemma(token.text)
+                tokenized_terms[s] |= {token.id[0]: lemma_word}  # update operation
 
     print('\n\n')
     print(tokenized_terms)
+    with open("token_file.json", "w") as file:
+        json.dump(tokenized_terms, file)
+
     return tokenized_terms
+
+
