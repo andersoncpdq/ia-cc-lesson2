@@ -11,6 +11,7 @@ def main():
     path = args['path']
     list_filtered_texts = reading_pdfs(path)
     tokenized_words = tokenize(list_filtered_texts)
+    print(tokenized_words)
 
 
 if __name__ == "__main__":

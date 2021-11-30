@@ -5,12 +5,13 @@ import stanza
 import re
 import unidecode
 import json
+from functools import lru_cache
 
 stanza.download('pt')
 
 
 stop_words = ['o', 'a', 'é', 'e', 'na', 'no', 'ou', 'do', 'da', 'de', 'na', 'à', 'ao', 'as', 'os', 'e,' 'por', 'em',
-              'mais', 'como', 'embora', 'haja', 'ser', 'foram', 'tais', 'dos', 'das', 'esse']  # A list with stop words
+              'mais', 'como', 'embora', 'haja', 'ser', 'foram', 'tais', 'dos', 'das', 'esse', 'que']  # A list with stop words
 
 
 def reading_pdfs(PATH: str) -> List:
@@ -32,7 +33,7 @@ def reading_pdfs(PATH: str) -> List:
 
     filtered_text = []
     for c in range(len(text)):
-        filtered_words = [word for word in text[c].split() if word.lower() not in stop_words]  # Filtering stop words
+        filtered_words = [word for word in text[c].split() if word.lower() not in stop_words and len(word) > 1]  # Filtering stop words
         filtered_words = [re.sub(r'[^\w]', '', word) for word in filtered_words]  # removing characters that's not
         # alphanumeric or underscore
 
@@ -49,6 +50,7 @@ def reading_pdfs(PATH: str) -> List:
     return filtered_text
 
 
+@lru_cache
 def lemma(word: str) -> str:
     """
     This function will lemmantize a word and return her with lemma
@@ -82,7 +84,6 @@ def tokenize(filtered_list: List) -> Dict:
             print('='*5 + f' Sentence {i + 1} tokens ' + '='*5)
             print(*[f'id: {token.id[0]}\ttext: {token.text}' for token in sentence.tokens], sep='\n')
             for token in sentence.tokens:
-                # LEMANTIZAR AQUI!!!!
                 lemma_word = lemma(token.text)
                 tokenized_terms[s] |= {token.id[0]: lemma_word}  # update operation
 
