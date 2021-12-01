@@ -31,13 +31,15 @@ def reading_pdfs(path: str) -> List:
 
     filtered_text = []
     for i in range(len(text)):
-        filtered_words = [word for word in text[i].split() if word not in stop_words and len(word) > 1]
+        filtered_words = [word for word in text[i].split() if word not in stop_words]
         # removing break lines
         filtered_words = [re.sub('\n', '', word) for word in filtered_words]
         # removing chars alphanumeric or underscore
         filtered_words = [re.sub(r'[^\w]', '', word) for word in filtered_words]
         # removing accents
         filtered_words = [unidecode.unidecode(z) for z in filtered_words]
+        # removing numeric values
+        filtered_words = [word for word in filtered_words if not word.isnumeric()]
 
         filtered_text.append(' '.join(filtered_words))
 
