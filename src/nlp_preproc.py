@@ -50,21 +50,7 @@ def reading_pdfs(PATH: str) -> List:
     return filtered_text
 
 
-@lru_cache
-def lemma(word: str) -> str:
-    """
-    This function will lemmantize a word and return her with lemma
-    :param word: word
-    :return: lemmantized word
-    """
-    nlp = stanza.Pipeline(lang='pt', processors='tokenize,mwt,pos,lemma')
-    doc = nlp(word)
-    for sent in doc.sentences:
-        for word in sent.words:
-            return word.lemma
-
-
-def tokenize(filtered_list: List) -> Dict:
+def tokenize_and_lemmatize(filtered_list: List) -> Dict:
     """
     This function takes a filtered list with the filtered texts and returns a dictionary with the tokenized
     words of the texts
@@ -75,20 +61,14 @@ def tokenize(filtered_list: List) -> Dict:
         i: dict() for i in range(len(filtered_list))
     }  # Nested dictionary for tokenized words
 
-    nlp = stanza.Pipeline(lang='pt', processors='tokenize')
+    nlp = stanza.Pipeline(lang='pt', processors='tokenize,mwt,pos,lemma')
 
     for s in range(len(filtered_list)):  # Loop for all passed list's elements
         doc = nlp(filtered_list[s])
-
         for i, sentence in enumerate(doc.sentences):
-            print('='*5 + f' Sentence {i + 1} tokens ' + '='*5)
-            print(*[f'id: {token.id[0]}\ttext: {token.text}' for token in sentence.tokens], sep='\n')
-            for token in sentence.tokens:
-                lemma_word = lemma(token.text)
-                tokenized_terms[s] |= {token.id[0]: lemma_word}  # update operation
+            for word in sentence.words:
+                tokenized_terms[s] |= {word.id: word.lemma}  # update operation
 
-    print('\n\n')
-    print(tokenized_terms)
     with open("token_file.json", "w") as file:
         json.dump(tokenized_terms, file)
 
