@@ -1,16 +1,15 @@
-import PyPDF2
 from typing import List, Dict
+import PyPDF2
 import os
-import stanza
 import re
-import unidecode
+import stanza
 import json
-from functools import lru_cache
+import nltk
 
 stanza.download('pt')
+nltk.download('stopwords')
 
-stop_words = ['o', 'a', 'é', 'e', 'na', 'no', 'ou', 'do', 'da', 'de', 'na', 'à', 'ao', 'as', 'os', 'e,' 'por', 'em',
-              'mas', 'como', 'pois', 'embora', 'tais', 'dos', 'das', 'esse', 'desse', 'que', 'um', 'uma']
+stop_words = nltk.corpus.stopwords.words('portuguese')
 
 
 def reading_pdfs(path: str) -> List:
@@ -31,22 +30,24 @@ def reading_pdfs(path: str) -> List:
 
     filtered_text = []
     for i in range(len(text)):
+        # removing stop words
         filtered_words = [word for word in text[i].split() if word not in stop_words]
-        # removing break lines
-        filtered_words = [re.sub('\n', '', word) for word in filtered_words]
         # removing chars alphanumeric or underscore
         filtered_words = [re.sub(r'[^\w]', '', word) for word in filtered_words]
+
+        # removing break lines
+        # filtered_words = [re.sub('\n', '', word) for word in filtered_words]
         # removing accents
-        #filtered_words = [unidecode.unidecode(z) for z in filtered_words]
+        # filtered_words = [unidecode.unidecode(z) for z in filtered_words]
         # removing numeric values
-        filtered_words = [word for word in filtered_words if not word.isnumeric()]
+        # filtered_words = [word for word in filtered_words if not word.isnumeric()]
 
         filtered_text.append(' '.join(filtered_words))
 
     return filtered_text
 
 
-def tokenize_and_lemmatize(filtered_list: List) -> Dict:
+def tokenize_and_lemma(filtered_list: List) -> Dict:
     """
     This function takes a filtered list with the filtered texts and returns a dictionary with the tokenized
     words of the texts
@@ -61,9 +62,9 @@ def tokenize_and_lemmatize(filtered_list: List) -> Dict:
 
     for s in range(len(filtered_list)):  # Loop for all passed list's elements
         doc = nlp(filtered_list[s])
-        for i, sentence in enumerate(doc.sentences):
+        for sentence in doc.sentences:
             for word in sentence.words:
-                if word.lemma not in stop_words and len(word.lemma) > 1:
+                if len(word.lemma) > 1:
                     tokenized_terms[s] |= {word.id: word.lemma}  # update operation
 
     with open("token_file.json", "w", encoding='utf-8') as file:

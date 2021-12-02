@@ -1,4 +1,4 @@
-from src.nlp_preproc import reading_pdfs, tokenize_and_lemmatize
+from src.nlp_preproc import reading_pdfs, tokenize_and_lemma
 from pathlib import Path
 import argparse
 
@@ -13,7 +13,7 @@ def main():
     path = args['path']
 
     list_filtered_texts = reading_pdfs(path)
-    tokenized_words = tokenize_and_lemmatize(list_filtered_texts)
+    tokenized_words = tokenize_and_lemma(list_filtered_texts)
 
     print(tokenized_words)
 
