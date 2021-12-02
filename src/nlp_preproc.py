@@ -37,7 +37,7 @@ def reading_pdfs(path: str) -> List:
         # removing chars alphanumeric or underscore
         filtered_words = [re.sub(r'[^\w]', '', word) for word in filtered_words]
         # removing accents
-        filtered_words = [unidecode.unidecode(z) for z in filtered_words]
+        #filtered_words = [unidecode.unidecode(z) for z in filtered_words]
         # removing numeric values
         filtered_words = [word for word in filtered_words if not word.isnumeric()]
 
@@ -66,8 +66,8 @@ def tokenize_and_lemmatize(filtered_list: List) -> Dict:
                 if word.lemma not in stop_words and len(word.lemma) > 1:
                     tokenized_terms[s] |= {word.id: word.lemma}  # update operation
 
-    with open("token_file.json", "w") as file:
-        json.dump(tokenized_terms, file)
+    with open("token_file.json", "w", encoding='utf-8') as file:
+        json.dump(tokenized_terms, file, ensure_ascii=False)
 
     return tokenized_terms
 
