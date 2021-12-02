@@ -14,7 +14,8 @@ stop_words = nltk.corpus.stopwords.words('portuguese')
 
 def reading_pdfs(path: str) -> List:
     """
-    This function reads all PDF's in the directory and saves their content in a list
+    This function reads all PDF's in the directory and saves their content in a list.
+
     :param path: Path to PDF directory
     :return: List with the filtered texts
     """
@@ -34,29 +35,29 @@ def reading_pdfs(path: str) -> List:
         filtered_words = [word for word in text[i].split() if word not in stop_words]
         # removing chars alphanumeric or underscore
         filtered_words = [re.sub(r'[^\w]', '', word) for word in filtered_words]
+        # removing numeric values
+        filtered_words = [word for word in filtered_words if not word.isnumeric()]
 
         # removing break lines
         # filtered_words = [re.sub('\n', '', word) for word in filtered_words]
         # removing accents
         # filtered_words = [unidecode.unidecode(z) for z in filtered_words]
-        # removing numeric values
-        # filtered_words = [word for word in filtered_words if not word.isnumeric()]
 
         filtered_text.append(' '.join(filtered_words))
 
     return filtered_text
 
 
-def tokenize_and_lemma(filtered_list: List) -> Dict:
+def tokenize_and_lemma(filtered_list: List) -> List:
     """
-    This function takes a filtered list with the filtered texts and returns a dictionary with the tokenized
-    words of the texts
+    This function takes a filtered list with the filtered texts and returns a list of
+    dictionaries with the tokenized words of the texts.
+
     :param filtered_list:
-    :return: tokenized dictionary
+    :return: tokenized dictionaries list
     """
-    tokenized_terms = {
-        i: dict() for i in range(len(filtered_list))
-    }  # Nested dictionary for tokenized words
+
+    tokenized_terms = [dict() for i in range(len(filtered_list))]
 
     nlp = stanza.Pipeline(lang='pt', processors='tokenize,mwt,pos,lemma')
 

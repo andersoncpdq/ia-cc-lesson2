@@ -57,14 +57,24 @@ def count_string_occurrences(str_lst, str_key):
     return str_lst.count(str_key)
 
 
-def occurrences_for_each_element(str_lst):
+def occurrences_for_each_element(lst):
     """
-    Counts how many times each element in a list of strings repeat
+    Counts how many times each element in a list of dicts
 
-    :param str_lst: stris list;
-    :return: dictionary mapeando a contagem de cada elemento na lista.
+    :param lst: list;
+    :return: list of dicts
     """
-    return Counter(str_lst)
+    cnt = []
+    for dct in lst:
+        aux = {}
+        for k in dct:
+            word = dct[k]
+            if word not in aux.keys():
+                aux[word] = 1
+            else:
+                aux[word] += 1
+        cnt.append(aux)
+    return cnt
 
 
 def proximity_analysis(str_lst, str_key, bias):
