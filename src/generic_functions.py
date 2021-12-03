@@ -1,5 +1,4 @@
 import numpy as np
-from collections import Counter
 
 
 def euclidean_distance(p1, p2):
