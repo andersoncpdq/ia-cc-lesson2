@@ -1,4 +1,5 @@
 import json
+import math
 
 
 def get_term_frequency(txt_occurrences_terms, qtd_terms_docs):
@@ -19,10 +20,9 @@ def get_term_frequency(txt_occurrences_terms, qtd_terms_docs):
     return tfs
 
 
-# Document Frequency (Df)
 def get_document_frequency(txt_occurrences_terms):
     """
-    Calculate document frequent (DF) for each term
+    Calculate document frequency (DF) for each term
 
     :param txt_occurrences_terms:
     :return: dictionary of frequencies
@@ -41,7 +41,23 @@ def get_document_frequency(txt_occurrences_terms):
     return dfs
 
 
-# Inverse Document Frequency (IDF)
+def get_inverse_document_frequency(txt_occurrences_terms, dfs):
+    """
+    Calculate inverse document frequency (IDF) for each term
+
+    :param txt_occurrences_terms:
+    :param dfs:
+    :return: dictionary of inverse frequencies
+    """
+    qtd_docs = len(txt_occurrences_terms)
+    idfs = {word: math.log10(qtd_docs/(df + 1)) for word, df in dfs.items()}
+
+    with open("idfs.json", "w", encoding='utf-8') as file:
+        json.dump(idfs, file, ensure_ascii=False)
+
+    return idfs
+
+
 # TF-IDF
 #
 # CSV file
