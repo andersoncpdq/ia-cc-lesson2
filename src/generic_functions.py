@@ -107,6 +107,14 @@ def no_repetition(lst):
     return list(dict.fromkeys(lst))
 
 
+def token_list_no_repetition(lst):
+    result = []
+    for doc in range(len(lst)):
+        for k in lst[doc].values():
+            result.append(k)
+    return no_repetition(result)
+
+
 def region_interest(mtx, c_roi, s_roi):
     """
     Extracts a ROI from a 2D matrix.

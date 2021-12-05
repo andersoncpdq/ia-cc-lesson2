@@ -1,6 +1,6 @@
 from src.generic_functions import occurrences_for_each_element
 from src.nlp_preproc import reading_pdfs, tokenize_and_lemma
-from src.nlp_calc import get_term_frequency, get_document_frequency, get_inverse_document_frequency, get_tf_idf
+from src.nlp_calc import *
 from pathlib import Path
 import argparse
 
@@ -26,12 +26,7 @@ def main():
     idfs = get_inverse_document_frequency(txt_occurrences_terms, dfs)
     tf_idf = get_tf_idf(tfs, idfs)
 
-    print(qtd_terms_docs)
-    print(txt_occurrences_terms)
-    print(tfs)
-    print(dfs)
-    print(idfs)
-    print(tf_idf)
+    set_csv_results(tokenized_words, tfs, dfs, idfs, tf_idf)
 
 
 if __name__ == "__main__":

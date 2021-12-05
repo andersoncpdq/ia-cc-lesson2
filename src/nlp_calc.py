@@ -1,5 +1,6 @@
-import json
+from src.generic_functions import token_list_no_repetition
 import numpy as np
+import csv
 
 
 def get_term_frequency(txt_occurrences_terms, qtd_terms_docs):
@@ -13,9 +14,6 @@ def get_term_frequency(txt_occurrences_terms, qtd_terms_docs):
     tfs = []
     for i in range(len(txt_occurrences_terms)):
         tfs.append(dict(map(lambda x: (x, txt_occurrences_terms[i][x] / qtd_terms_docs[i]), txt_occurrences_terms[i])))
-
-    with open("tfs.json", "w", encoding='utf-8') as file:
-        json.dump(tfs, file, ensure_ascii=False)
 
     return tfs
 
@@ -35,9 +33,6 @@ def get_document_frequency(txt_occurrences_terms):
             else:
                 dfs[word] += 1
 
-    with open("dfs.json", "w", encoding='utf-8') as file:
-        json.dump(dfs, file, ensure_ascii=False)
-
     return dfs
 
 
@@ -51,9 +46,6 @@ def get_inverse_document_frequency(txt_occurrences_terms, dfs):
     """
     qtd_docs = len(txt_occurrences_terms)
     idfs = {word: np.log10(qtd_docs/(df + 1)) for word, df in dfs.items()}
-
-    with open("idfs.json", "w", encoding='utf-8') as file:
-        json.dump(idfs, file, ensure_ascii=False)
 
     return idfs
 
@@ -74,10 +66,25 @@ def get_tf_idf(tfs, idfs):
             aux[word] = score
         tf_idf.append(aux)
 
-    with open("tf_idf.json", "w", encoding='utf-8') as file:
-        json.dump(tf_idf, file, ensure_ascii=False)
-
     return tf_idf
 
 
-# CSV file
+def set_csv_results(tokens, tfs, dfs, idfs, tf_idfs):
+    all_tokens = token_list_no_repetition(tokens)
+
+    with open('results.csv', mode='w', newline='') as csv_file:
+        fieldnames = ["DOC", "TOKEN", "TF", "DF", "IDF", "TF-IDF"]
+        writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+        writer.writeheader()
+
+        for word in all_tokens:
+            for doc in range(len(tokens)):
+                if word in tokens[doc].values():
+                    writer.writerow({
+                        "DOC": str(doc),
+                        "TOKEN": word,
+                        "TF": str(tfs[doc][word]),
+                        "DF": str(dfs[word]),
+                        "IDF": str(idfs[word]),
+                        "TF-IDF": str(tf_idfs[doc][word])
+                    })

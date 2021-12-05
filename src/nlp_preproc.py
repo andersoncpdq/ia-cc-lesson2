@@ -38,11 +38,6 @@ def reading_pdfs(path: str) -> List:
         # removing numeric values
         filtered_words = [word for word in filtered_words if not word.isnumeric()]
 
-        # removing break lines
-        # filtered_words = [re.sub('\n', '', word) for word in filtered_words]
-        # removing accents
-        # filtered_words = [unidecode.unidecode(z) for z in filtered_words]
-
         filtered_text.append(' '.join(filtered_words))
 
     return filtered_text
