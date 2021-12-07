@@ -115,6 +115,16 @@ def token_list_no_repetition(lst):
     return no_repetition(result)
 
 
+def n_terms_max_tf_idf(tokens, n_terms, tf_idfs):
+    lst_words_max_tf_idf = []
+    for doc in range(len(tokens)):
+        for word, tf_idf in tf_idfs[doc].items():
+            lst_words_max_tf_idf.append((word, tf_idf))
+    lst_words_max_tf_idf.sort(key=lambda x: x[1], reverse=True)
+
+    return [lst_words_max_tf_idf[i][0] for i in range(n_terms)]
+
+
 def region_interest(mtx, c_roi, s_roi):
     """
     Extracts a ROI from a 2D matrix.

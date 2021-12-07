@@ -26,6 +26,9 @@ def main():
     idfs = get_inverse_document_frequency(txt_occurrences_terms, dfs)
     tf_idf = get_tf_idf(tfs, idfs)
 
+    dict_proximity = get_list_of_proximity(tokenized_words, tfs, tf_idf, 5, 2)
+    set_csv_proximity(dict_proximity)
+
     set_csv_results(tokenized_words, tfs, dfs, idfs, tf_idf)
 
 

@@ -1,4 +1,4 @@
-from src.generic_functions import token_list_no_repetition
+from src.generic_functions import token_list_no_repetition, proximity_analysis, n_terms_max_tf_idf
 import numpy as np
 import csv
 
@@ -69,10 +69,36 @@ def get_tf_idf(tfs, idfs):
     return tf_idf
 
 
+def get_list_of_proximity(tokens, tfs, tf_idfs, n_terms, bias):
+    lst_words_max_tf_idf = n_terms_max_tf_idf(tokens, n_terms, tf_idfs)
+
+    dict_str_prox = {}
+    for word in lst_words_max_tf_idf:
+        for doc in range(len(tokens)):
+            lst_tk_doc = [w for w in tokens[doc].values()]
+            if word in lst_tk_doc:
+                dict_str_prox[word] = [(w, tfs[doc][w]) for w in proximity_analysis(lst_tk_doc, word, bias)]
+
+    return dict_str_prox
+
+
+def set_csv_proximity(dict_proximity):
+    with open('tokens_max_tf_idf.csv', mode='w', newline='', encoding='utf-8') as csv_file:
+        fieldnames = ["TOKENS MAX TF-IDF", "LIST OF PROXIMITY AND TF"]
+        writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+        writer.writeheader()
+
+        for word, lst in dict_proximity.items():
+            writer.writerow({
+                "TOKENS MAX TF-IDF": word,
+                "LIST OF PROXIMITY AND TF": str(lst)
+            })
+
+
 def set_csv_results(tokens, tfs, dfs, idfs, tf_idfs):
     all_tokens = token_list_no_repetition(tokens)
 
-    with open('results.csv', mode='w', newline='') as csv_file:
+    with open('results.csv', mode='w', newline='', encoding='utf-8') as csv_file:
         fieldnames = ["DOC", "TOKEN", "TF", "DF", "IDF", "TF-IDF"]
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
         writer.writeheader()
