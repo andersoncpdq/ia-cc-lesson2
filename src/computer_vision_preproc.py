@@ -22,7 +22,17 @@ def data_augmentation(PATH: str):
                 break
 
 
-data_augmentation('PATH HERE')
+def normalize(PATH: str):
+    """
+    This function will normalize the data between 0 and 1
+    :param PATH: Path to files
+    :return: image array
+    """
+    images = [cv2.imread(PATH + '/' + image)/255. for image in os.listdir(PATH)]
+    return images
+
+
+data_augmentation('/home/bagriel/IAAcademy/iaacademy-cc/test_app/computer_vision/data_especular_crop/test_images/confluente')
 
 
 
