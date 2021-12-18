@@ -1,13 +1,16 @@
 import os
 
 import cv2
+import glob
 from PIL import Image
 from keras.preprocessing.image import load_img, img_to_array, ImageDataGenerator
 import os
+import numpy as np
+import mahotas
 
 
 def data_augmentation(my_images):
-   # my_images = [cv2.imread(PATH + '/' + image) for image in sorted(os.listdir(PATH))]  # Getting images
+    #my_images = [cv2.imread(PATH + '/' + image) for image in sorted(os.listdir(PATH))]  # Getting images
     print(my_images)
     alpha = 1.02
     beta = 0.1
@@ -18,6 +21,27 @@ def data_augmentation(my_images):
     return array
 
 
+def preprocessing1(PATH: str):
+    pass
+
+def preprocessing2(PATH: str):
+    pass
+
+def green_channel(img):
+    b,g,r = cv2.split(img)
+    return g
+
+
+def preprocessing3(PATH: str):
+    # green channel extraction:
+
+    # CLAHE application:
+
+    # Adaptive Thresholding
+
+
+    pass
+
 def normalize(PATH: str):
     """
     This function will normalize the data between 0 and 1
@@ -26,6 +50,59 @@ def normalize(PATH: str):
     """
     images = [cv2.imread(PATH + '/' + image)/255. for image in os.listdir(PATH)]
     return images
+
+
+def load_path(path, ext="*"):
+    return os.path.join(path, ext)
+
+
+def load_images(paths):
+    return [cv2.imread(path) for path in paths]
+
+def CLAHE(image, clip=2.0, grid=(8,8)):
+    """
+    Equalizes the histogram of a grayscale image using
+    Contrast Limited Adaptive Histogram Equalization (CLAHE).
+
+    :param image: image array
+    :param clip: threshold for contrast limiting
+    :param grid:  size of grid for histogram equalization
+                  (Input image will be divided into equally
+                  sized rectangular tiles).
+
+    :return: image array after CLAHE
+
+    """
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    clahe = cv2.createCLAHE(clipLimit=clip, tileGridSize=grid)
+    return clahe.apply(gray)
+
+
+
+def resize(img, dim=(224, 224)):
+    return cv2.resize(img, dim, interpolation = cv2.INTER_AREA)
+
+
+    
+    
+
+def labeling(data, val):
+    return val * np.ones(len(data))
+
+def adaptive_threshold(img, bsize=11, k=2):
+    """
+    Adaptive threshold is the method where the threshold value is calculated for smaller regions. This leads to
+    different threshold values for different regions with regard to the change in lighting. For this, the
+    blockSize × blockSize neighborhood was weighted sum of a less constant point.
+
+    :param img: input image matrix (single channel, 8-bit or floating point)
+    :param bsize: size of a pixel neighborhood that is used to calculate a threshold value.
+    :param k: a constant value that is subtracted from the average or weighted sum of neighborhood pixels.
+
+    :return: adaptive thresholded image array
+    """
+    return cv2.adaptiveThreshold(img, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+                                 cv2.THRESH_BINARY, bsize, k)
 
 
 
