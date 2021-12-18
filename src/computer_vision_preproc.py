@@ -8,8 +8,8 @@ import os
 import numpy as np
 import mahotas
 
-def data_augmentation(PATH: str):
-    my_images = [cv2.imread(PATH + '/' + image) for image in sorted(os.listdir(PATH))]  # Getting images
+def data_augmentation(my_images):
+    #my_images = [cv2.imread(PATH + '/' + image) for image in sorted(os.listdir(PATH))]  # Getting images
     print(my_images)
     alpha = 1.02
     beta = 0.1
@@ -29,6 +29,7 @@ def preprocessing2(PATH: str):
 def green_channel(img):
     b,g,r = cv2.split(img)
     return g
+
 
 def preprocessing3(PATH: str):
     # green channel extraction:
@@ -50,11 +51,13 @@ def normalize(PATH: str):
     images = [cv2.imread(PATH + '/' + image)/255. for image in os.listdir(PATH)]
     return images
 
-def load_images(PATH: str):
-    #images = [cv2.imread(PATH + '/' + image) for image in sorted(os.listdir(PATH))]
-    return [cv2.imread(PATH + '\\' + image) for image in sorted(os.listdir(PATH))]
+
+def load_path(path, ext="*"):
+    return os.path.join(path, ext)
 
 
+def load_images(paths):
+    return [cv2.imread(path) for path in paths]
 
 def CLAHE(image, clip=2.0, grid=(8,8)):
     """
@@ -86,24 +89,9 @@ def CLAHE(image, clip=2.0, grid=(8,8)):
         
     return img_resized'''
 
-def resize(path, dim=(224, 224)):
+def resize(img, dim=(224, 224)):
+    return cv2.resize(img, dim, interpolation = cv2.INTER_AREA)
 
-    #X = [np.array(resize(cv2.imread(path), (224, 224))) for path in X_path]
-
-    try:
-        img = cv2.imread(path)
-        if(path == "data_especular_crop\test_images\integra\1100.png"):
-            pass
-        else:
-            img = cv2.resize(img, dim, interpolation = cv2.INTER_AREA)
-
-        #print(path)
-
-    except Exception as e:
-        print(path)
-        print(str(e))
-
-    return img
 
     
     

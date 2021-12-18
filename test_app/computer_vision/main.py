@@ -23,38 +23,38 @@ import matplotlib.pyplot as plt
 import time
 
 # entrada de dados + redimensionamento:
-# glob.glob("<your image directory path>\\*.png"):
-#confluentes = glob.glob("data_especular_crop\\train_images\\confluente\\*.png")
-#confluentes = confluentes + glob.glob(os.path.join('data_especular_crop/test_images/confluente', '*'))
-#confluentes = [path for path in confluentes]
+confluentes = load_path('data_especular_crop/test_images/confluente')
+confluentes = confluentes + load_path('data_especular_crop/train_images/confluente')
+integras = [path for path in confluentes]
 
-#esparsas = glob.glob(os.path.join('data_especular_crop/train_images/esparsa', '*'))
-#esparsas = esparsas + glob.glob(os.path.join('data_especular_crop/test_images/esparsa', '*'))
-#esparsas = [path for path in esparsas]
+esparsas = load_path('data_especular_crop/test_images/esparsa')
+esparsas = esparsas + load_path('data_especular_crop/train_images/esparsa')
+esparsas = [path for path in esparsas]
 
-#glob.glob("<your image directory path>\\*.png"):
-integras = glob.glob("data_especular_crop\\train_images\\integra\\*.png")
-integras = integras + glob.glob("data_especular_crop\\test_images\\integra\\*.png")
-#integras = sorted(os.listdir('data_especular_crop/train_images/integra'))
-#integras = integras + sorted(os.listdir('data_especular_crop/test_images/integra'))
+integras = load_path('data_especular_crop/test_images/integra')
+integras = integras + load_path('data_especular_crop/train_images/integra')
 integras = [path for path in integras]
 
-#raras = glob.glob(os.path.join('data_especular_crop/train_images/rara', '*'))
-#raras = raras + glob.glob(os.path.join('data_especular_crop/test_images/rara', '*'))
-#raras = [path for path in raras]
 
-#print('confluentes: ', len(confluentes))
-#print('esparsas: ', len(esparsas))
+raras = load_path('data_especular_crop/test_images/rara')
+raras = raras + load_path('data_especular_crop/train_images/rara')
+raras = [path for path in raras ]
+
+
+print('confluentes: ', len(confluentes))
+print('esparsas: ', len(esparsas))
 print('integras: ', len(integras))
-#print('raras: ', len(raras))
+print('raras: ', len(raras))
 
-#X_path = confluentes + esparsas + integras + raras
-X_path = integras
+X_path = confluentes + esparsas + integras + raras
+
 print(len(X_path))
 
-X = [np.array(resize(path)) for path in X_path]
+
+X = [np.array(resize(img) for img in load_images(X_path))]
+X = data_augmentation(X)
 X = np.array(X)
 X = X / 255
+print(len(X))
 
-img = cv2.imread(integras[1])
-print(img.shape)
+
