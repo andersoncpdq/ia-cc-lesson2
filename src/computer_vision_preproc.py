@@ -6,11 +6,12 @@ from PIL import Image
 from keras.preprocessing.image import load_img, img_to_array, ImageDataGenerator
 import os
 import numpy as np
-import mahotas
+
+IMGS = sorted(os.listdir('/home/bagriel/IAAcademy/iaacademy-cc/test_app/computer_vision/data_especular_crop/test_images/confluente'))
 
 
-def data_augmentation(my_images):
-    #my_images = [cv2.imread(PATH + '/' + image) for image in sorted(os.listdir(PATH))]  # Getting images
+def data_augmentation():
+    my_images = [cv2.imread('/home/bagriel/IAAcademy/iaacademy-cc/test_app/computer_vision/data_especular_crop/test_images/confluente' + f'/{image}') for image in IMGS]  # Getting images
     print(my_images)
     alpha = 1.02
     beta = 0.1
@@ -18,6 +19,7 @@ def data_augmentation(my_images):
     blur_images = [cv2.medianBlur(image, 1) for image in my_images]  # Images with blur
     rotate_image = [cv2.rotate(image, cv2.ROTATE_90_CLOCKWISE) for image in my_images]  # Rotate images
     array = [(my_images[pos], adjusting_images[pos], blur_images[pos], rotate_image[pos]) for pos in range(len(my_images))]
+
     return array
 
 
@@ -39,17 +41,22 @@ def preprocessing3(PATH: str):
 
     # Adaptive Thresholding
 
-
     pass
 
-def normalize(PATH: str):
+
+def normalize(images):
     """
     This function will normalize the data between 0 and 1
-    :param PATH: Path to files
+    :param images: array of images
     :return: image array
     """
-    images = [cv2.imread(PATH + '/' + image)/255. for image in os.listdir(PATH)]
-    return images
+    new_image = []
+    for index in range(len(images)):
+        new_image.append(images[index]/255.)
+
+    return new_image
+
+
 
 
 def load_path(path, ext="*"):
@@ -82,9 +89,6 @@ def CLAHE(image, clip=2.0, grid=(8,8)):
 def resize(img, dim=(224, 224)):
     return cv2.resize(img, dim, interpolation = cv2.INTER_AREA)
 
-
-    
-    
 
 def labeling(data, val):
     return val * np.ones(len(data))

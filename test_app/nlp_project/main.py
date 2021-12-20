@@ -1,6 +1,7 @@
 from src.generic_functions import occurrences_for_each_element
 from src.nlp_preproc import reading_pdfs, tokenize_and_lemma
 from src.nlp_calc import *
+from src.computer_vision_preproc import data_augmentation, normalize
 from pathlib import Path
 import argparse
 
