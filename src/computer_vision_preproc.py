@@ -10,8 +10,8 @@ import mahotas
 
 
 def data_augmentation(my_images):
+    print(len(my_images))
     #my_images = [cv2.imread(PATH + '/' + image) for image in sorted(os.listdir(PATH))]  # Getting images
-    print(my_images)
     alpha = 1.02
     beta = 0.1
     adjusting_images = [cv2.convertScaleAbs(image, alpha=alpha, beta=beta) for image in my_images]  # Changing the contrast and the brightness of the images
@@ -20,27 +20,42 @@ def data_augmentation(my_images):
     array = [(my_images[pos], adjusting_images[pos], blur_images[pos], rotate_image[pos]) for pos in range(len(my_images))]
     return array
 
+def otsu_threshold(img):
+    # convert to gray image
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    # apply blur
+    suave = cv2.GaussianBlur(gray, (7,7), 0)
+    T = mahotas.thresholding.otsu(suave)
+    temp = gray.copy()
+    temp[temp > T] = 255
+    temp[temp < 255] = 0
+    return cv2.bitwise_not(temp)
 
-def preprocessing1(PATH: str):
-    pass
 
-def preprocessing2(PATH: str):
-    pass
+
+
+
+def preprocessing1(my_images):
+    return data_augmentation(my_images)
+
+def preprocessing2(my_images):
+    return [otsu_threshold(img) for img in my_images]
+
+
 
 def green_channel(img):
     b,g,r = cv2.split(img)
     return g
 
-
-def preprocessing3(PATH: str):
+def preprocessing3(my_images):
     # green channel extraction:
+    green_images = [green_channel(img) for img in my_images]
 
     # CLAHE application:
+    clahe_images = [CLAHE(img) for img in green_images]
 
     # Adaptive Thresholding
-
-
-    pass
+    return [adaptive_threshold(img) for img in clahe_images]
 
 def normalize(PATH: str):
     """
@@ -53,11 +68,12 @@ def normalize(PATH: str):
 
 
 def load_path(path, ext="*"):
-    return os.path.join(path, ext)
+    return glob.glob(os.path.join(path, '*'))
 
 
-def load_images(paths):
-    return [cv2.imread(path) for path in paths]
+
+def load_images(PATH: str):
+    return [cv2.imread(PATH + '/' + image) for image in sorted(os.listdir(PATH))]
 
 def CLAHE(image, clip=2.0, grid=(8,8)):
     """
@@ -73,9 +89,8 @@ def CLAHE(image, clip=2.0, grid=(8,8)):
     :return: image array after CLAHE
 
     """
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     clahe = cv2.createCLAHE(clipLimit=clip, tileGridSize=grid)
-    return clahe.apply(gray)
+    return clahe.apply(image)
 
 
 

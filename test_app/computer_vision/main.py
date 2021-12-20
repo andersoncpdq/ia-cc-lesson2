@@ -23,7 +23,7 @@ import matplotlib.pyplot as plt
 import time
 
 # entrada de dados + redimensionamento:
-confluentes = load_path('data_especular_crop/test_images/confluente')
+'''confluentes = load_path('data_especular_crop/test_images/confluente')
 confluentes = confluentes + load_path('data_especular_crop/train_images/confluente')
 integras = [path for path in confluentes]
 
@@ -46,7 +46,7 @@ print('esparsas: ', len(esparsas))
 print('integras: ', len(integras))
 print('raras: ', len(raras))
 
-X_path = confluentes + esparsas + integras + raras
+X_path = [path for path in (confluentes + esparsas + integras + raras)]
 
 print(len(X_path))
 
@@ -55,6 +55,11 @@ X = [np.array(resize(img) for img in load_images(X_path))]
 X = data_augmentation(X)
 X = np.array(X)
 X = X / 255
-print(len(X))
+print(len(X))'''
 
+img = cv2.imread("data_especular_crop/test_images/confluente/5.png")
+print(img.shape)
+
+plt.imshow(img, cmap='gray')
+plt.show()
 
