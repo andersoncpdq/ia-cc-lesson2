@@ -2,17 +2,18 @@ import os
 
 import cv2
 import glob
+
+import numpy
 from PIL import Image
 from keras.preprocessing.image import load_img, img_to_array, ImageDataGenerator
 import os
 import numpy as np
+import mahotas
+from functools import lru_cache
 
-IMGS = sorted(os.listdir('/home/bagriel/IAAcademy/iaacademy-cc/test_app/computer_vision/data_especular_crop/test_images/confluente'))
 
-
-def data_augmentation():
-    my_images = [cv2.imread('/home/bagriel/IAAcademy/iaacademy-cc/test_app/computer_vision/data_especular_crop/test_images/confluente' + f'/{image}') for image in IMGS]  # Getting images
-    print(my_images)
+def data_augmentation(my_images):
+    print(len(my_images))
     alpha = 1.02
     beta = 0.1
     adjusting_images = [cv2.convertScaleAbs(image, alpha=alpha, beta=beta) for image in my_images]  # Changing the contrast and the brightness of the images
@@ -23,48 +24,59 @@ def data_augmentation():
     return array
 
 
-def preprocessing1(PATH: str):
-    pass
+def otsu_threshold(img):
+    """
+    Applying Otsu Threshold in images
+    :param img: image array
+    :return:
+    """
+    # convert to gray image
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    # apply blur
+    suave = cv2.GaussianBlur(gray, (7,7), 0)
+    T = mahotas.thresholding.otsu(suave)
+    temp = gray.copy()
+    temp[temp > T] = 255
+    temp[temp < 255] = 0
+    return cv2.bitwise_not(temp)
 
-def preprocessing2(PATH: str):
-    pass
+
+def preprocessing1(my_images):
+    return data_augmentation(my_images)
+
+
+def preprocessing2(my_images):
+    return [otsu_threshold(img) for img in my_images]
+
 
 def green_channel(img):
+    """
+    Getting Green channel from image
+    :param img: Image array
+    :return:
+    """
     b,g,r = cv2.split(img)
     return g
 
 
-def preprocessing3(PATH: str):
+def preprocessing3(my_images):
     # green channel extraction:
+    green_images = [green_channel(img) for img in my_images]
 
     # CLAHE application:
+    clahe_images = [CLAHE(img) for img in green_images]
 
     # Adaptive Thresholding
-
-    pass
-
-
-def normalize(images):
-    """
-    This function will normalize the data between 0 and 1
-    :param images: array of images
-    :return: image array
-    """
-    new_image = []
-    for index in range(len(images)):
-        new_image.append(images[index]/255.)
-
-    return new_image
-
-
+    return [adaptive_threshold(img) for img in clahe_images]
 
 
 def load_path(path, ext="*"):
-    return os.path.join(path, ext)
+    return glob.glob(os.path.join(path, '*'))
 
 
-def load_images(paths):
-    return [cv2.imread(path) for path in paths]
+def load_images(PATH: str):
+    return [cv2.imread(PATH + '/' + image) for image in sorted(os.listdir(PATH))]
+
 
 def CLAHE(image, clip=2.0, grid=(8,8)):
     """
@@ -80,10 +92,8 @@ def CLAHE(image, clip=2.0, grid=(8,8)):
     :return: image array after CLAHE
 
     """
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     clahe = cv2.createCLAHE(clipLimit=clip, tileGridSize=grid)
-    return clahe.apply(gray)
-
+    return clahe.apply(image)
 
 
 def resize(img, dim=(224, 224)):
@@ -92,6 +102,7 @@ def resize(img, dim=(224, 224)):
 
 def labeling(data, val):
     return val * np.ones(len(data))
+
 
 def adaptive_threshold(img, bsize=11, k=2):
     """
