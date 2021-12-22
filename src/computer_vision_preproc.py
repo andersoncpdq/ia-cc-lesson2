@@ -34,11 +34,13 @@ def otsu_threshold(img):
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     # apply blur
     suave = cv2.GaussianBlur(gray, (7,7), 0)
-    T = mahotas.thresholding.otsu(suave)
+    '''T = mahotas.thresholding.otsu(suave)
     temp = gray.copy()
     temp[temp > T] = 255
-    temp[temp < 255] = 0
-    return cv2.bitwise_not(temp)
+    temp[temp < 255] = 0'''
+    ret, thresh1 = cv2.threshold(suave, 120, 255, cv2.THRESH_BINARY + 
+                                            cv2.THRESH_OTSU) 
+    return thresh1
 
 
 def preprocessing1(my_images):
